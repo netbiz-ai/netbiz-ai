@@ -236,3 +236,25 @@ a { color: inherit; text-decoration: none; }
 ::-webkit-scrollbar-thumb { background: var(--hairline); }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
+/* Hero orb morph ------------------------------------------------------- */
+@keyframes orb-morph {
+  0%,  100% { border-radius: 58% 42% 35% 65% / 55% 38% 62% 45%; }
+  25%        { border-radius: 42% 58% 55% 45% / 48% 62% 38% 52%; }
+  50%        { border-radius: 52% 48% 42% 58% / 62% 42% 58% 38%; }
+  75%        { border-radius: 35% 65% 60% 40% / 40% 55% 45% 60%; }
+}
+.orb {
+  animation: orb-morph 9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; border-radius: 50%; }
+}
+
+/* Hero headline gradient text ----------------------------------------- */
+.hero-gradient-text {
+  background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 45%, #818cf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline;
+}

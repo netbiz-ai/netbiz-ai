@@ -1,264 +1,156 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
-const STATUS_LINES = [
-  { k: "SYSTEMS_LIVE", v: "04" },
-  { k: "AVG_TIME_TO_PROD", v: "2-6 WK" },
-  { k: "REPLY_SLA", v: "<24 HR" },
-  { k: "MODELS_AGNOSTIC", v: "TRUE" },
-];
+const LOGOS = ["OpenAI", "Anthropic", "n8n", "HubSpot", "Slack", "Notion"];
 
-const TICKER = [
-  "SHIP", "MEASURE", "ITERATE",
-  "SHIP", "MEASURE", "ITERATE",
-  "SHIP", "MEASURE", "ITERATE",
-];
-
-function useUtcClock() {
-  const [now, setNow] = useState<string>("");
-  useEffect(() => {
-    const tick = () => {
-      const d = new Date();
-      const hh = String(d.getUTCHours()).padStart(2, "0");
-      const mm = String(d.getUTCMinutes()).padStart(2, "0");
-      const ss = String(d.getUTCSeconds()).padStart(2, "0");
-      setNow(`${hh}:${mm}:${ss}`);
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-  return now;
+function Orb() {
+  return (
+    <div className="relative flex items-center justify-center">
+      {/* outer ambient glow */}
+      <div
+        aria-hidden
+        className="absolute rounded-full"
+        style={{
+          width: "520px",
+          height: "520px",
+          background:
+            "radial-gradient(circle, rgba(139,92,246,0.35) 0%, rgba(236,72,153,0.2) 45%, transparent 70%)",
+          filter: "blur(55px)",
+        }}
+      />
+      {/* secondary teal glow */}
+      <div
+        aria-hidden
+        className="absolute rounded-full"
+        style={{
+          width: "300px",
+          height: "300px",
+          top: "55%",
+          left: "55%",
+          background:
+            "radial-gradient(circle, rgba(6,182,212,0.3) 0%, transparent 70%)",
+          filter: "blur(50px)",
+        }}
+      />
+      {/* main morphing orb */}
+      <div
+        aria-hidden
+        className="orb relative"
+        style={{
+          width: "380px",
+          height: "380px",
+          background:
+            "radial-gradient(circle at 38% 32%, #ddd6fe, #7c3aed 32%, #db2777 65%, #0e7490 100%)",
+          boxShadow:
+            "0 0 90px 24px rgba(124,58,237,0.22), inset 0 0 60px 10px rgba(255,255,255,0.06)",
+        }}
+      />
+    </div>
+  );
 }
 
-const reveal = {
-  hidden: { opacity: 0, y: 18, filter: "blur(6px)" },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: {
-      delay: 0.18 + i * 0.06,
-      duration: 0.8,
-      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-    },
-  }),
-};
+const fade = (delay = 0) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: {
+    duration: 0.75,
+    delay,
+    ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+  },
+});
 
 export function Hero() {
-  const utc = useUtcClock();
-
   return (
     <section
       id="top"
-      className="relative isolate overflow-hidden border-b border-[var(--hairline)]"
+      className="relative isolate min-h-screen overflow-hidden bg-black"
     >
-      {/* grid lines */}
+      {/* Ambient bg gradient */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.55] [background-image:linear-gradient(to_right,var(--hairline)_1px,transparent_1px)] [background-size:calc(100%/12)_100%]"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 65% 45%, rgba(88,28,135,0.18) 0%, transparent 65%)",
+        }}
       />
-      <div className="grain" aria-hidden />
 
-      {/* system bar */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="relative z-10 mt-14 border-b border-[var(--hairline)]"
-      >
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-3">
-          <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--paper-2)]">
-            <span className="inline-block h-1.5 w-1.5 bg-[var(--accent)]" />
-            <span>SYS-001</span>
-            <span className="text-[var(--muted)]">/</span>
-            <span>BUILD-2026.05</span>
-            <span className="text-[var(--muted)]">/</span>
-            <span className="hidden sm:inline">STATUS: BOOKING_Q3</span>
-          </div>
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-            <span className="hidden sm:inline">UTC</span>
-            <span className="tabular-nums text-[var(--paper)]">
-              {utc || "00:00:00"}
-            </span>
-            <span className="blink text-[var(--accent)]">▮</span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* main canvas */}
-      <div className="relative z-10 mx-auto grid max-w-[1400px] grid-cols-12 gap-x-6 px-6 pb-10 pt-16 md:pb-16 md:pt-24">
-        {/* left rail */}
-        <div className="col-span-12 mb-10 flex items-start justify-between md:col-span-1 md:mb-0 md:block">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-            00 / Hero
-          </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)] md:mt-3 md:block">
-            ↳ Production
-          </span>
-        </div>
-
-        {/* headline column */}
-        <div className="col-span-12 md:col-span-8">
-          <motion.span
-            custom={0}
-            variants={reveal}
-            initial="hidden"
-            animate="show"
-            className="mb-6 inline-flex items-center gap-2 border border-[var(--hairline)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--paper-2)]"
-          >
-            <span className="h-1 w-1 bg-[var(--accent)]" />
-            Now booking — Q3 2026
-          </motion.span>
-
-          <h1 className="display text-[clamp(2.75rem,9vw,7.5rem)] text-[var(--paper)]">
-            <motion.span
-              custom={1}
-              variants={reveal}
-              initial="hidden"
-              animate="show"
-              className="block"
-            >
-              Ship AI that
-            </motion.span>
-            <motion.span
-              custom={2}
-              variants={reveal}
-              initial="hidden"
-              animate="show"
-              className="block"
-            >
-              <span className="relative inline-block">
-                <span
-                  aria-hidden
-                  className="absolute -left-2 top-[0.58em] -z-10 h-[0.42em] w-[calc(100%+1rem)] bg-[var(--accent)]"
-                />
-                <span className="relative">actually</span>
-              </span>{" "}
-              <span className="text-[var(--muted)]">/</span> moves
-            </motion.span>
-            <motion.span
-              custom={3}
-              variants={reveal}
-              initial="hidden"
-              animate="show"
-              className="block"
-            >
-              your business.
-            </motion.span>
-          </h1>
-
-          <motion.p
-            custom={4}
-            variants={reveal}
-            initial="hidden"
-            animate="show"
-            className="mt-8 max-w-xl text-[15px] leading-relaxed text-[var(--paper-2)]"
-          >
-            We design, deploy, and measure agents, chatbots, and automations
-            end-to-end. Every system we deliver runs in production, with the
-            metrics to prove it.{" "}
-            <span className="text-[var(--paper)]">
-              Demos are not deliverables.
-            </span>
-          </motion.p>
-
-          <motion.div
-            custom={5}
-            variants={reveal}
-            initial="hidden"
-            animate="show"
-            className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4"
-          >
-            <a href="#contact" className="btn-acid">
-              <span>Book a call</span>
-              <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.25} />
-            </a>
-            <a href="#services" className="btn-ghost">
-              <span>See what we build</span>
-              <span aria-hidden>↘</span>
-            </a>
-          </motion.div>
-        </div>
-
-        {/* right — status panel */}
-        <motion.aside
-          custom={6}
-          variants={reveal}
-          initial="hidden"
-          animate="show"
-          className="col-span-12 mt-14 md:col-span-3 md:col-start-10 md:mt-2"
-        >
-          <div className="border border-[var(--hairline)] bg-[var(--ink-2)]">
-            <div className="flex items-center justify-between border-b border-[var(--hairline)] px-3 py-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                // IN_PRODUCTION
-              </span>
-              <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)]">
-                <span className="inline-block h-1.5 w-1.5 animate-pulse bg-[var(--accent)]" />
-                LIVE
-              </span>
-            </div>
-            <ul className="divide-y divide-[var(--hairline)]">
-              {STATUS_LINES.map((s) => (
-                <li
-                  key={s.k}
-                  className="flex items-center justify-between px-3 py-2.5"
-                >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                    {s.k}
-                  </span>
-                  <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.1em] tabular-nums text-[var(--paper)]">
-                    {s.v}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="border-t border-[var(--hairline)] px-3 py-2">
-              <span className="font-mono text-[9px] uppercase leading-relaxed tracking-[0.18em] text-[var(--muted)]">
-                Last commit · {utc || "00:00:00"} UTC · clean
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-4 flex items-start gap-2">
-            <span className="mt-0.5 font-mono text-[10px] text-[var(--accent)]">↳</span>
-            <p className="font-mono text-[10px] uppercase leading-relaxed tracking-[0.16em] text-[var(--muted)]">
-              Model- and platform-agnostic. We pick the stack that fits the
-              problem.
-            </p>
-          </div>
-        </motion.aside>
-      </div>
-
-      {/* marquee ticker */}
-      <div className="relative z-10 border-t border-[var(--hairline)] bg-[var(--ink-2)]">
-        <div className="overflow-hidden py-5">
-          <div className="marquee">
-            {Array.from({ length: 2 }).map((_, copy) => (
-              <span
-                key={copy}
-                className="flex shrink-0 items-center gap-10 pr-10 font-mono text-[12px] uppercase tracking-[0.32em] text-[var(--paper-2)]"
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-[1200px] flex-col px-6">
+        {/* Main hero grid */}
+        <div className="flex flex-1 items-center">
+          <div className="grid w-full grid-cols-1 gap-10 py-28 md:grid-cols-2 md:gap-0 md:py-0">
+            {/* Left — copy */}
+            <div className="flex flex-col justify-center">
+              <motion.h1
+                {...fade(0.1)}
+                className="text-[clamp(2.4rem,5.5vw,4.25rem)] font-medium leading-[1.07] tracking-[-0.03em] text-white"
               >
-                {TICKER.map((t, i) => (
-                  <span key={`${copy}-${i}`} className="flex items-center gap-10">
-                    <span
-                      className={
-                        i % 3 === 1 ? "text-[var(--accent)]" : "text-[var(--paper-2)]"
-                      }
-                    >
-                      {t}
-                    </span>
-                    <span className="text-[var(--muted)]">●</span>
-                  </span>
-                ))}
+                <span className="hero-gradient-text">Production AI</span>
+                {" "}from
+                <br />
+                Idea to Deployment
+              </motion.h1>
+
+              <motion.p
+                {...fade(0.25)}
+                className="mt-6 max-w-[420px] text-[15px] leading-relaxed text-[#777]"
+              >
+                NETBIZ.AI delivers agents, chatbots, and automations that ship
+                to production. Not demos — real systems with measurable outcomes
+                for businesses that need results.
+              </motion.p>
+
+              <motion.div
+                {...fade(0.38)}
+                className="mt-8 flex flex-wrap items-center gap-3"
+              >
+                <a
+                  href="#contact"
+                  className="flex h-9 items-center gap-2 rounded border border-[#333] px-4 text-[13px] font-medium text-white transition-colors hover:border-[#555]"
+                >
+                  Book a Demo
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+                <a
+                  href="#services"
+                  className="flex h-9 items-center gap-2 text-[13px] font-medium text-[#777] transition-colors hover:text-white"
+                >
+                  Build AI
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Right — orb */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.88 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.3, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="flex items-center justify-center"
+            >
+              <Orb />
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Social proof strip */}
+        <motion.div {...fade(0.55)} className="pb-16 text-center">
+          <p className="mb-8 text-[11px] uppercase tracking-[0.22em] text-[#444]">
+            NETBIZ.AI works with Startups, Agencies &amp; Enterprise Teams
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-5">
+            {LOGOS.map((name) => (
+              <span
+                key={name}
+                className="cursor-default text-[17px] font-semibold text-[#2a2a2a] transition-colors hover:text-[#555]"
+              >
+                {name}
               </span>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
