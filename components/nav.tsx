@@ -1,14 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 
 const LINKS = [
   { href: "#services", label: "Services" },
   { href: "#stack", label: "Stack" },
   { href: "#philosophy", label: "Philosophy" },
+  { href: "/blog", label: "Blog" },
   { href: "#contact", label: "Contact" },
 ];
+
+function NavItem({
+  href,
+  label,
+  className,
+  onClick,
+}: {
+  href: string;
+  label: string;
+  className?: string;
+  onClick?: () => void;
+}) {
+  if (href.startsWith("#")) {
+    return (
+      <a href={href} className={className} onClick={onClick}>
+        {label}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className} onClick={onClick}>
+      {label}
+    </Link>
+  );
+}
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -24,13 +51,12 @@ export function Nav() {
         {/* Center nav — desktop */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {LINKS.map((l) => (
-            <a
+            <NavItem
               key={l.href}
               href={l.href}
+              label={l.label}
               className="text-[13px] text-[#999] transition-colors duration-150 hover:text-white"
-            >
-              {l.label}
-            </a>
+            />
           ))}
         </nav>
 
@@ -63,14 +89,13 @@ export function Nav() {
         <div className="border-t border-[#1a1a1a] bg-black/95 px-6 py-4 md:hidden">
           <nav className="flex flex-col gap-4">
             {LINKS.map((l) => (
-              <a
+              <NavItem
                 key={l.href}
                 href={l.href}
+                label={l.label}
                 onClick={() => setOpen(false)}
                 className="text-[14px] text-[#999] hover:text-white"
-              >
-                {l.label}
-              </a>
+              />
             ))}
             <a
               href="#contact"
