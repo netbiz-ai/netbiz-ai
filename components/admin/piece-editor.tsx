@@ -78,6 +78,9 @@ export function PieceEditor({ piece: initialPiece }: Props) {
         value={piece.linkedin_draft}
         onSave={(v) => patch({ linkedin_draft: v })}
         rows={10}
+        copyable
+        copyLabel="Copy & open LinkedIn"
+        openUrlAfterCopy="https://www.linkedin.com/feed/?shareActive=true"
       />
 
       <TwitterEditor

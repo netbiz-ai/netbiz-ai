@@ -8,12 +8,25 @@ type Props = {
   onSave: (value: string) => Promise<void>;
   rightSlot?: React.ReactNode;
   rows?: number;
+  copyable?: boolean;
+  copyLabel?: string;
+  openUrlAfterCopy?: string;
 };
 
-export function DraftCard({ label, value, onSave, rightSlot, rows = 18 }: Props) {
+export function DraftCard({
+  label,
+  value,
+  onSave,
+  rightSlot,
+  rows = 18,
+  copyable,
+  copyLabel = "Copy",
+  openUrlAfterCopy,
+}: Props) {
   const [draft, setDraft] = useState(value);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setDraft(value);
@@ -26,6 +39,19 @@ export function DraftCard({ label, value, onSave, rightSlot, rows = 18 }: Props)
       setSavedAt(Date.now());
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(draft);
+    } catch {
+      return;
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    if (openUrlAfterCopy) {
+      window.open(openUrlAfterCopy, "_blank", "noopener,noreferrer");
     }
   }
 
@@ -47,6 +73,16 @@ export function DraftCard({ label, value, onSave, rightSlot, rows = 18 }: Props)
           >
             {saving ? "Saving..." : "Save"}
           </button>
+          {copyable && (
+            <button
+              type="button"
+              onClick={handleCopy}
+              disabled={!draft.trim()}
+              className="admin-btn-ghost text-[12px] disabled:opacity-30"
+            >
+              {copied ? "Copied" : copyLabel}
+            </button>
+          )}
           {rightSlot}
         </div>
       </div>
