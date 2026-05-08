@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { LeadSchema, type Lead } from "@/lib/schemas";
+import {
+  LeadSchema,
+  type Lead,
+  PAIN_POINT_OPTIONS,
+  BUDGET_OPTIONS,
+} from "@/lib/schemas";
 import { Button } from "./ui/button";
 import { Input, Textarea } from "./ui/input";
 
@@ -17,6 +22,7 @@ export function ContactForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Lead>({
     resolver: zodResolver(LeadSchema),
@@ -24,10 +30,15 @@ export function ContactForm() {
       name: "",
       email: "",
       company: "",
+      companyWebsite: "",
+      painPoints: [],
       message: "",
-      website: "",
+      _hp: "",
     },
   });
+
+  const selectedPainPoints = watch("painPoints") ?? [];
+  const selectedBudget = watch("budget");
 
   const onSubmit = handleSubmit(async (data) => {
     setStatus("submitting");
@@ -46,7 +57,6 @@ export function ContactForm() {
       }
       setStatus("success");
       if (body.redirectUrl) {
-        // small delay so the user sees the success state
         setTimeout(() => {
           window.location.href = body.redirectUrl as string;
         }, 900);
@@ -63,8 +73,8 @@ export function ContactForm() {
         <CheckCircle2 className="h-10 w-10 text-emerald-400" />
         <h3 className="text-xl font-medium">Got it — thanks.</h3>
         <p className="max-w-sm text-sm text-white/60">
-          We&apos;ll reply within one business day. Sending you over to pick
-          a time…
+          We&apos;ll reply within one business day. Sending you over to pick a
+          time&hellip;
         </p>
       </div>
     );
@@ -89,19 +99,100 @@ export function ContactForm() {
           error={errors.email?.message}
         />
       </div>
-      <Input
-        label="Company (optional)"
-        placeholder="Acme Co."
-        autoComplete="organization"
-        {...register("company")}
-        error={errors.company?.message}
-      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Input
+          label="Company"
+          placeholder="Acme Co."
+          autoComplete="organization"
+          {...register("company")}
+          error={errors.company?.message}
+        />
+        <Input
+          label="Company website"
+          type="url"
+          placeholder="https://acme.com"
+          {...register("companyWebsite")}
+          error={errors.companyWebsite?.message}
+        />
+      </div>
+
+      {/* Pain points */}
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-medium tracking-wide text-white/70">
+          Main challenges
+        </span>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {PAIN_POINT_OPTIONS.map((point) => {
+            const checked = selectedPainPoints.includes(point);
+            return (
+              <label
+                key={point}
+                className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-xs transition-colors ${
+                  checked
+                    ? "border-white/30 bg-white/[0.08] text-white"
+                    : "border-white/10 bg-white/[0.02] text-white/50 hover:border-white/20 hover:text-white/70"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  value={point}
+                  {...register("painPoints")}
+                  className="sr-only"
+                />
+                <span
+                  className={`h-3.5 w-3.5 shrink-0 rounded-sm border transition-colors ${
+                    checked ? "border-white/50 bg-white/20" : "border-white/20"
+                  }`}
+                />
+                {point}
+              </label>
+            );
+          })}
+        </div>
+        {errors.painPoints && (
+          <span className="text-xs text-red-400/90">
+            {errors.painPoints.message}
+          </span>
+        )}
+      </div>
+
+      {/* Budget */}
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-medium tracking-wide text-white/70">
+          Monthly budget
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {BUDGET_OPTIONS.map((opt) => (
+            <label
+              key={opt.value}
+              className={`cursor-pointer rounded-lg border px-3.5 py-2 text-xs transition-colors ${
+                selectedBudget === opt.value
+                  ? "border-white/30 bg-white/[0.08] text-white"
+                  : "border-white/10 bg-white/[0.02] text-white/50 hover:border-white/20 hover:text-white/70"
+              }`}
+            >
+              <input
+                type="radio"
+                value={opt.value}
+                {...register("budget")}
+                className="sr-only"
+              />
+              {opt.label}
+            </label>
+          ))}
+        </div>
+        {errors.budget && (
+          <span className="text-xs text-red-400/90">{errors.budget.message}</span>
+        )}
+      </div>
+
       <Textarea
         label="What do you need help with?"
         placeholder="A few sentences about your problem, what you've tried, and what success looks like."
         {...register("message")}
         error={errors.message?.message}
       />
+
       {/* honeypot */}
       <div
         aria-hidden
@@ -109,12 +200,7 @@ export function ContactForm() {
       >
         <label>
           Website
-          <input
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            {...register("website")}
-          />
+          <input type="text" tabIndex={-1} autoComplete="off" {...register("_hp")} />
         </label>
       </div>
 
@@ -122,10 +208,10 @@ export function ContactForm() {
         <p className="text-xs text-white/45">
           Or email us directly at{" "}
           <a
-            href="mailto:hello@netbiz.ai"
+            href="mailto:elvis@netbiz.cloud"
             className="underline underline-offset-4 hover:text-white"
           >
-            hello@netbiz.ai
+            elvis@netbiz.cloud
           </a>
           .
         </p>
