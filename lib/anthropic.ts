@@ -15,7 +15,8 @@ export function getAnthropic(): Anthropic | null {
   return cached;
 }
 
-const MODEL = "claude-sonnet-4-6";
+const MODEL_BLOG = "claude-sonnet-4-6";
+const MODEL_DERIV = "claude-haiku-4-5-20251001";
 const MAX_TOKENS_PLAIN = 2500;
 const MAX_TOKENS_SEARCH = 4000;
 const MAX_RESUMES = 5;
@@ -87,11 +88,13 @@ Return only the Markdown.`;
 const SYSTEM_LINKEDIN = `You write LinkedIn posts that read like a sharp practitioner thinking out
 loud after a frustrating client call. Audience: founders and operators.
 
-Research:
-You may use the web_search tool to ground specific claims in current sources before
-writing. Search when the topic names tools, products, releases, or anything where
-accuracy matters. Weave findings in as concrete details; do NOT append a link list
-or "Sources:" line. The post should read as your voice.
+Source:
+You will receive a blog post the same author already published. Pull the sharpest
+single claim or example from it and develop that into a LinkedIn post in your
+voice. Do NOT summarize the post or try to cover all of its points. Pick one
+load-bearing idea and let everything else go. Reuse specific facts, names, and
+numbers from the blog when they support your chosen point. Do not invent facts
+the blog does not contain.
 
 Output: 800-1300 characters. Hook line on its own line. Short paragraphs
 (1-3 sentences). End with one specific question that invites a reply.
@@ -137,6 +140,13 @@ Return only the post body.`;
 
 const SYSTEM_TWITTER = `You write X/Twitter threads from the voice of a working AI consultant.
 Opinionated, specific, willing to be wrong out loud.
+
+Source:
+You will receive a blog post the same author already published. Pull the sharpest
+single line of argument from it and unpack it across a thread in your voice. Do
+NOT summarize the post. Pick the most opinionated claim and develop it. Reuse
+specific facts, names, and numbers from the blog when they support that claim.
+Do not invent facts the blog does not contain.
 
 Output: 5-9 tweets, one per line, each prefixed "N/" (1/, 2/, ...).
 Each tweet ≤ 270 chars. Return ONLY the numbered tweets, separated by
@@ -195,6 +205,7 @@ function extractText(content: Anthropic.ContentBlock[]): string {
 
 async function callClaude(
   client: Anthropic,
+  model: string,
   system: string,
   userText: string,
   useSearch: boolean,
@@ -206,7 +217,7 @@ async function callClaude(
   const callOnce = () => {
     if (useSearch) {
       return client.messages.create({
-        model: MODEL,
+        model,
         max_tokens: MAX_TOKENS_SEARCH,
         system: [
           {
@@ -220,7 +231,7 @@ async function callClaude(
       });
     }
     return client.messages.create({
-      model: MODEL,
+      model,
       max_tokens: MAX_TOKENS_PLAIN,
       system: [
         {
@@ -245,6 +256,7 @@ async function callClaude(
 
 async function voicePass(
   client: Anthropic,
+  model: string,
   system: string,
   draft: string,
 ): Promise<string> {
@@ -258,7 +270,7 @@ Preserve every specific fact, name, number, and source attribution from the draf
 
 DRAFT:
 ${draft}`;
-  const res = await callClaude(client, system, userText, false);
+  const res = await callClaude(client, model, system, userText, false);
   return extractText(res.content).trim();
 }
 
@@ -268,19 +280,18 @@ export async function generateDrafts(sourceText: string): Promise<Drafts> {
     throw new Error("ANTHROPIC_API_KEY is not set");
   }
 
-  const [blogRes, linkedinRes, twitterRes] = await Promise.all([
-    callClaude(client, SYSTEM_BLOG, sourceText, true),
-    callClaude(client, SYSTEM_LINKEDIN, sourceText, true),
-    callClaude(client, SYSTEM_TWITTER, sourceText, false),
-  ]);
-
+  const blogRes = await callClaude(client, MODEL_BLOG, SYSTEM_BLOG, sourceText, true);
   const blogDraft = extractText(blogRes.content).trim();
-  const linkedinDraft = extractText(linkedinRes.content).trim();
+  const blogClean = await voicePass(client, MODEL_BLOG, SYSTEM_BLOG, blogDraft);
 
-  const [blogClean, linkedinClean] = await Promise.all([
-    voicePass(client, SYSTEM_BLOG, blogDraft),
-    voicePass(client, SYSTEM_LINKEDIN, linkedinDraft),
+  const blogPrompt = `BLOG POST:\n\n${blogClean}`;
+  const [linkedinRes, twitterRes] = await Promise.all([
+    callClaude(client, MODEL_DERIV, SYSTEM_LINKEDIN, blogPrompt, false),
+    callClaude(client, MODEL_DERIV, SYSTEM_TWITTER, blogPrompt, false),
   ]);
+
+  const linkedinDraft = extractText(linkedinRes.content).trim();
+  const linkedinClean = await voicePass(client, MODEL_DERIV, SYSTEM_LINKEDIN, linkedinDraft);
 
   console.log("[anthropic] cache_read_input_tokens:", {
     blog: blogRes.usage.cache_read_input_tokens ?? 0,
