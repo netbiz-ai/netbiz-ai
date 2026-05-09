@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
           <div className="admin-display text-3xl">netbiz.ai</div>
-          <div className="admin-marker-muted mt-1 text-[12px]">
+          <div className="admin-marker-muted mt-1 text-[15px]">
             COMMAND CENTER
           </div>
         </div>
@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="admin-marker-muted block mb-2 text-[12px]">
+            <label className="admin-marker-muted block mb-2 text-[15px]">
               Email
             </label>
             <input
@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
             />
           </div>
           <div>
-            <label className="admin-marker-muted block mb-2 text-[12px]">
+            <label className="admin-marker-muted block mb-2 text-[15px]">
               Password
             </label>
             <input
@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
           </div>
 
           {error && (
-            <div className="text-sm text-[#E85A4F] border border-[#E85A4F] rounded-[var(--admin-radius-sm)] px-3 py-2">
+            <div className="text-base text-[#E85A4F] border border-[#E85A4F] rounded-[var(--admin-radius-sm)] px-3 py-2">
               {error}
             </div>
           )}

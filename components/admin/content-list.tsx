@@ -9,7 +9,7 @@ export function ContentList({ pieces }: Props) {
   if (pieces.length === 0) {
     return (
       <div className="admin-card p-10 text-center">
-        <p className="text-[var(--admin-muted)] text-sm mb-4">
+        <p className="text-[var(--admin-muted)] text-base mb-4">
           No pieces yet. Create your first one.
         </p>
         <Link href="/admin" className="admin-btn-primary inline-flex">
@@ -30,19 +30,19 @@ export function ContentList({ pieces }: Props) {
               href={`/admin/content/${p.id}`}
               className="admin-card flex items-start gap-4 px-5 py-4 transition-colors hover:border-[var(--admin-accent)]"
             >
-              <div className="admin-marker-muted text-[12px] pt-1 w-20 shrink-0">
+              <div className="admin-marker-muted text-[15px] pt-1 w-20 shrink-0">
                 {date}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[var(--admin-text)] text-[17px] line-clamp-2 break-words">
+                <div className="text-[var(--admin-text)] text-[20px] line-clamp-2 break-words">
                   {label}
                 </div>
                 <div className="flex items-center gap-3 mt-1.5">
-                  <span className="admin-marker-muted text-[12px]">
+                  <span className="admin-marker-muted text-[15px]">
                     {p.source_type.toUpperCase()}
                   </span>
                   {p.posts?.slug && (
-                    <span className="admin-marker text-[12px]">LIVE</span>
+                    <span className="admin-marker text-[15px]">LIVE</span>
                   )}
                 </div>
               </div>

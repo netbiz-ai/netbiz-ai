@@ -54,7 +54,7 @@ export function PublishButton({
       <button
         type="button"
         onClick={() => setShowInput(true)}
-        className="admin-btn-ghost text-[14px]"
+        className="admin-btn-ghost text-[17px]"
       >
         {publishedSlug ? "Republish" : "Publish"}
       </button>
@@ -69,27 +69,27 @@ export function PublishButton({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Post title"
-        className="admin-input-bare border border-[var(--admin-hairline-strong)] rounded-[var(--admin-radius-sm)] px-2 py-1 text-[14px] w-56"
+        className="admin-input-bare border border-[var(--admin-hairline-strong)] rounded-[var(--admin-radius-sm)] px-2 py-1 text-[17px] w-56"
       />
-      <span className="admin-marker-muted text-[12px]">
+      <span className="admin-marker-muted text-[15px]">
         /{slugPreview || "..."}
       </span>
       <button
         type="button"
         onClick={publish}
         disabled={busy}
-        className="admin-btn-primary text-[14px] py-1.5 px-3 disabled:opacity-30"
+        className="admin-btn-primary text-[17px] py-1.5 px-3 disabled:opacity-30"
       >
         {busy ? "..." : publishedSlug ? "Republish" : "Go"}
       </button>
       <button
         type="button"
         onClick={() => setShowInput(false)}
-        className="admin-btn-ghost text-[14px]"
+        className="admin-btn-ghost text-[17px]"
       >
         Cancel
       </button>
-      {err && <span className="text-[14px] text-[#E85A4F]">{err}</span>}
+      {err && <span className="text-[17px] text-[#E85A4F]">{err}</span>}
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function PieceEditor({ piece: initialPiece }: Props) {
       <div className="flex items-center justify-between">
         <Link
           href="/admin/content"
-          className="admin-btn-ghost text-[14px]"
+          className="admin-btn-ghost text-[17px]"
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
           <span>All pieces</span>
@@ -52,7 +52,7 @@ export function PieceEditor({ piece: initialPiece }: Props) {
         <div className="admin-marker mb-2">
           {piece.source_type.toUpperCase()} SOURCE
         </div>
-        <div className="admin-card px-5 py-3 text-sm text-[var(--admin-muted)] break-words">
+        <div className="admin-card px-5 py-3 text-base text-[var(--admin-muted)] break-words">
           {piece.source_input.slice(0, 280)}
           {piece.source_input.length > 280 && "..."}
         </div>

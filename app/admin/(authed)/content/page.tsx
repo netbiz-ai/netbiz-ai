@@ -21,7 +21,7 @@ export default async function AdminContentPage() {
     <div className="px-6 lg:px-12 py-12 max-w-[920px] mx-auto">
       <div className="admin-marker mb-3">CONTENT</div>
       <h1 className="admin-display text-4xl mb-2">Your pieces</h1>
-      <p className="text-[var(--admin-muted)] text-sm mb-10">
+      <p className="text-[var(--admin-muted)] text-base mb-10">
         Open one to edit drafts and publish.
       </p>
       <ContentList pieces={pieces} />
