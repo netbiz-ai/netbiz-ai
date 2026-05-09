@@ -57,7 +57,7 @@ export function TwitterEditor({ tweets, onSave }: Props) {
           <button
             type="button"
             onClick={handleCopy}
-            className="admin-btn-ghost text-[12px]"
+            className="admin-btn-ghost text-[14px]"
           >
             {copied ? "Copied" : "Copy thread"}
           </button>
@@ -65,7 +65,7 @@ export function TwitterEditor({ tweets, onSave }: Props) {
             type="button"
             onClick={handleSave}
             disabled={!dirty || saving}
-            className="admin-btn-ghost text-[12px] disabled:opacity-30"
+            className="admin-btn-ghost text-[14px] disabled:opacity-30"
           >
             {saving ? "Saving..." : "Save"}
           </button>
@@ -110,7 +110,7 @@ export function TwitterEditor({ tweets, onSave }: Props) {
                 onChange={(e) => update(i, e.target.value)}
                 rows={3}
                 spellCheck={false}
-                className="admin-input-bare w-full px-3 py-2 font-mono text-[13px] resize-y"
+                className="admin-input-bare w-full px-3 py-2 font-mono text-[15px] resize-y"
               />
             </div>
           );
@@ -119,7 +119,7 @@ export function TwitterEditor({ tweets, onSave }: Props) {
         <button
           type="button"
           onClick={add}
-          className="admin-btn-ghost text-[12px]"
+          className="admin-btn-ghost text-[14px]"
         >
           + Add tweet
         </button>

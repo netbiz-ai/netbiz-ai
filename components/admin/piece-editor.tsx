@@ -38,7 +38,7 @@ export function PieceEditor({ piece: initialPiece }: Props) {
       <div className="flex items-center justify-between">
         <Link
           href="/admin/content"
-          className="admin-btn-ghost text-[12px]"
+          className="admin-btn-ghost text-[14px]"
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
           <span>All pieces</span>

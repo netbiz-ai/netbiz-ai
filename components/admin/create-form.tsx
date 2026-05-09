@@ -48,7 +48,7 @@ export function CreateForm() {
     <div className="px-6 lg:px-12 py-12 max-w-[760px] mx-auto">
       <header className="text-center mb-10">
         <h1 className="admin-display text-5xl mb-3">Create Content</h1>
-        <p className="text-[var(--admin-muted)] text-[15px]">
+        <p className="text-[var(--admin-muted)] text-[17px]">
           Transform your ideas into LinkedIn posts, blog articles, and Twitter threads.
         </p>
       </header>
@@ -103,7 +103,7 @@ export function CreateForm() {
           />
         )}
 
-        <div className="px-5 py-2.5 border-t border-[var(--admin-hairline)] text-[12px] text-[var(--admin-muted)]">
+        <div className="px-5 py-2.5 border-t border-[var(--admin-hairline)] text-[14px] text-[var(--admin-muted)]">
           {mode === "text"
             ? `${wordCount} ${wordCount === 1 ? "word" : "words"}`
             : input ? "URL ready" : "Awaiting URL"}

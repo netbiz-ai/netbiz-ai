@@ -69,7 +69,7 @@ export function DraftCard({
             type="button"
             onClick={handleSave}
             disabled={!dirty || saving}
-            className="admin-btn-ghost text-[12px] disabled:opacity-30"
+            className="admin-btn-ghost text-[14px] disabled:opacity-30"
           >
             {saving ? "Saving..." : "Save"}
           </button>
@@ -78,7 +78,7 @@ export function DraftCard({
               type="button"
               onClick={handleCopy}
               disabled={!draft.trim()}
-              className="admin-btn-ghost text-[12px] disabled:opacity-30"
+              className="admin-btn-ghost text-[14px] disabled:opacity-30"
             >
               {copied ? "Copied" : copyLabel}
             </button>
@@ -91,7 +91,7 @@ export function DraftCard({
         onChange={(e) => setDraft(e.target.value)}
         rows={rows}
         spellCheck={false}
-        className="admin-input-bare w-full px-5 py-4 font-mono text-[13px] resize-y"
+        className="admin-input-bare w-full px-5 py-4 font-mono text-[15px] resize-y"
       />
     </div>
   );

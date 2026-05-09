@@ -20,7 +20,7 @@ export function Sidebar({ userEmail }: Props) {
       <div className="px-2 mb-10">
         <Link href="/admin" className="block">
           <div className="admin-display text-2xl">netbiz.ai</div>
-          <div className="admin-marker-muted mt-1 text-[10px]">
+          <div className="admin-marker-muted mt-1 text-[12px]">
             COMMAND CENTER
           </div>
         </Link>
@@ -47,7 +47,7 @@ export function Sidebar({ userEmail }: Props) {
       </nav>
 
       <div className="border-t border-[var(--admin-hairline)] pt-4 mt-4">
-        <div className="admin-marker-muted text-[10px] px-2 mb-2 truncate">
+        <div className="admin-marker-muted text-[12px] px-2 mb-2 truncate">
           {userEmail}
         </div>
         <form action="/api/admin/logout" method="post">
