@@ -1,0 +1,27 @@
+services:
+  elvis-ai:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    container_name: elvis-ai
+    restart: always
+    env_file:
+      - elvis-ai.env
+    expose:
+      - "3000"
+    networks:
+      - n8n_default
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=n8n_default
+      - "traefik.http.routers.elvis-ai.rule=Host(`netbiz.cloud`) || Host(`www.netbiz.cloud`)"
+      - traefik.http.routers.elvis-ai.tls=true
+      - traefik.http.routers.elvis-ai.entrypoints=web,websecure
+      - traefik.http.routers.elvis-ai.tls.certresolver=mytlschallenge
+      - traefik.http.services.elvis-ai.loadbalancer.server.port=3000
+
+networks:
+  n8n_default:
+    external: true
